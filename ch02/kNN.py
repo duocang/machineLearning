@@ -56,5 +56,6 @@ returnmat, classLabelVector= file2matrix('/Users/xuesong/machineLearning/Machine
 print(classLabelVector)
 fig = plt.figure()
 ax = fig.add_subplot(111)       #"111" means "1x1 grid, first subplot"
-ax.scatter(returnmat[:,1], returnmat[:,2])
+ax.scatter(returnmat[:,1], returnmat[:,2],
+           15.0*array(classLabelVector), 15.0*array(classLabelVector))
 plt.show()
