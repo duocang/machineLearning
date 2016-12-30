@@ -24,7 +24,31 @@ def classify0(inX, dataSet, labels, k):
     sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
 
-g = createDataSet()[0]
-l = createDataSet()[1]
+def file2matrix(filename):
+    fr = open(filename)
+    numberOfLines = len(fr.readlines())         #get the number of lines in the file
+    returnMat = zeros((numberOfLines,3))        #prepare matrix to return
+    classLabelVector = []                       #prepare labels return
+    fr = open(filename)
+    index = 0
+    for line in fr.readlines():
+        line = line.strip()
+        listFromLine = line.split('\t')
+        returnMat[index,:] = listFromLine[0:3]
+        if listFromLine[-1] == 'largeDoses':
+            level = 3
+        elif listFromLine[-1] == 'smallDoses':
+            level = 2
+        else:
+            level = 1
+        classLabelVector.append(level)
+        index += 1
+
+    return returnMat,classLabelVector
+
+g ,l= createDataSet()
 a = classify0([0,0], g, l, 3)
 print (a)
+
+returnmat, classLabelVector= file2matrix('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet.txt')
+print(classLabelVector)
