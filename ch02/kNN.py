@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from numpy import *
+import matplotlib
+import matplotlib.pyplot as plt
 import operator
 
 def createDataSet():
@@ -43,8 +45,8 @@ def file2matrix(filename):
             level = 1
         classLabelVector.append(level)
         index += 1
-
     return returnMat,classLabelVector
+
 
 g ,l= createDataSet()
 a = classify0([0,0], g, l, 3)
@@ -52,3 +54,7 @@ print (a)
 
 returnmat, classLabelVector= file2matrix('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet.txt')
 print(classLabelVector)
+fig = plt.figure()
+ax = fig.add_subplot(111)       #"111" means "1x1 grid, first subplot"
+ax.scatter(returnmat[:,1], returnmat[:,2])
+plt.show()
