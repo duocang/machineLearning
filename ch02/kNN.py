@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 from numpy import *
 import matplotlib
 import matplotlib.pyplot as plt
@@ -47,15 +51,34 @@ def file2matrix(filename):
         index += 1
     return returnMat,classLabelVector
 
+def normalization(dataSet):
+    minVals = dataSet.min(0)    #max_per_col = X.max(axis=0)
+    maxVals = dataSet.max(0)
+    ranges = maxVals - minVals
+    normDataSet = zeros(shape(dataSet))
+    lines = dataSet.shape[0]
+    normDataSet = dataSet - tile(minVals, (lines, 1))
+    normDataSet = normDataSet/tile(ranges, (lines, 1))
+    return normDataSet, ranges, minVals, lines
 
 g ,l= createDataSet()
 a = classify0([0,0], g, l, 3)
-print (a)
+print ("预测类型为：" + a)
 
 returnmat, classLabelVector= file2matrix('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet.txt')
-print(classLabelVector)
+#print(classLabelVector)
 fig = plt.figure()
 ax = fig.add_subplot(111)       #"111" means "1x1 grid, first subplot"
 ax.scatter(returnmat[:,1], returnmat[:,2],
            15.0*array(classLabelVector), 15.0*array(classLabelVector))
+plt.xlabel('玩视频游戏所消耗时间百分比')
+plt.ylabel('每周消费的冰淇淋公升数')
 plt.show()
+plt.cla()
+
+normDataSet, ranges, minVals, lines= normalization(returnmat)
+print (ranges)
+print(lines)
+print(normDataSet)
+
+print("程序运行完毕")
