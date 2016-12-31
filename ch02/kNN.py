@@ -15,7 +15,7 @@ def createDataSet():
 	labels = ['A', 'A', 'B', 'B']
 	return group, labels
 
-def classify0(inX, dataSet, labels, k):
+def classify0(inX, dataSet, labels, k):     #用于分类的输入变量inX，训练集dataSet，标签labels，最近邻居数目
     dataSetSize = dataSet.shape[0]
     diffMat = tile(inX, (dataSetSize,1)) - dataSet
     sqDiffMat = diffMat**2
@@ -61,6 +61,22 @@ def normalization(dataSet):
     normDataSet = normDataSet/tile(ranges, (lines, 1))
     return normDataSet, ranges, minVals, lines
 
+def datingClassTest(filename):
+    hoRation = 0.10         # 10% as test data
+    datingDataMat , datingLabels = file2matrix(filename)
+    normMat, ranges, minVals, lines = normalization(datingDataMat)
+    numTestVecs = int(lines * hoRation)
+    errorCount = 0.0
+    for i in range(numTestVecs):
+        classifierResult = classify0(normMat[i,:], normMat[numTestVecs:lines, :],
+                                     datingLabels[numTestVecs:lines], 3)#用于分类的输入变量inX，训练集dataSet，标签labels，最近邻居数目
+        print("the classifier came back with: %d, the real answer is: %d" %(classifierResult, datingLabels[i]))
+        if(classifierResult != datingLabels[i]):
+            errorCount += 1
+    print "the total error rate is: %f" %(errorCount/float(numTestVecs))
+
+
+
 g ,l= createDataSet()
 a = classify0([0,0], g, l, 3)
 print ("预测类型为：" + a)
@@ -80,5 +96,7 @@ normDataSet, ranges, minVals, lines= normalization(returnmat)
 print (ranges)
 print(lines)
 print(normDataSet)
+
+datingClassTest('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet.txt')
 
 print("程序运行完毕")
