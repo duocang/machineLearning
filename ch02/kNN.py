@@ -69,12 +69,22 @@ def datingClassTest(filename):
     errorCount = 0.0
     for i in range(numTestVecs):
         classifierResult = classify0(normMat[i,:], normMat[numTestVecs:lines, :],
-                                     datingLabels[numTestVecs:lines], 3)#用于分类的输入变量inX，训练集dataSet，标签labels，最近邻居数目
+                                     datingLabels[numTestVecs:lines], 10)#用于分类的输入变量inX，训练集dataSet，标签labels，最近邻居数目
         print("the classifier came back with: %d, the real answer is: %d" %(classifierResult, datingLabels[i]))
         if(classifierResult != datingLabels[i]):
             errorCount += 1
     print "the total error rate is: %f" %(errorCount/float(numTestVecs))
 
+def classifyPerson(filename):
+    resultList = ['not at all', 'in small doses', 'in large doses']
+    percentTts = float(raw_input("percentage of time spent playing video games?"))
+    ffMiles = float(raw_input("frequent flier miles earned per year?"))
+    iceCream = float(raw_input("liters of ice cream consumed per year?"))
+    datingDataMat, datingLabels = file2matrix(filename)
+    normMat, max_min, minVals, lines = normalization(datingDataMat)
+    dataToTest = array([(ffMiles-minVals[0])/max_min[0], (percentTts-minVals[1])/max_min[1], (iceCream-minVals[2])/max_min][2])
+    classifierResult = classify0(dataToTest,normMat,datingLabels, 3)
+    print "You will probably like ths person: ", resultList[classifierResult -1 ]
 
 
 g ,l= createDataSet()
@@ -92,11 +102,14 @@ plt.ylabel('每周消费的冰淇淋公升数')
 plt.show()
 plt.cla()
 
-normDataSet, ranges, minVals, lines= normalization(returnmat)
-print (ranges)
+normDataSet, max_min, minVals, lines= normalization(returnmat)
+
+print (max_min)
 print(lines)
 print(normDataSet)
 
 datingClassTest('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet.txt')
+
+classifyPerson('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet2.txt')
 
 print("程序运行完毕")
