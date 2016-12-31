@@ -9,6 +9,7 @@ from numpy import *
 import matplotlib
 import matplotlib.pyplot as plt
 import operator
+from os import listdir
 
 def createDataSet():
 	group = array([[1.0, 1.1], [1.0, 1.0], [0, 0], [0, 0.1]])
@@ -108,9 +109,9 @@ print (max_min)
 print(lines)
 print(normDataSet)
 
-datingClassTest('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet.txt')
+#datingClassTest('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet.txt')
 
-classifyPerson('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet2.txt')
+#classifyPerson('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet2.txt')
 
 print("程序运行完毕")
 
@@ -122,5 +123,35 @@ def img2Vector(filename):
     for i in range(32):
         lineStr = fr.readline()
         for j in range(32):
-            returnVect[0,32*i+j] = int(lineStr)
+            returnVect[0,32*i+j] = int(lineStr[j])
     return returnVect
+
+def handwritingClassTest(trainFilename, testFileName):
+    hwLabels = []
+    trainingFileList = listdir(trainFilename)    #returns a list containing the names of the entries in the direcotry
+    number = len(trainingFileList)
+    trainingMat = zeros((number, 1024))
+    for i in range(number):
+        fileNameStr = trainingFileList[i]           #
+        fileStr = fileNameStr.split('.')[0]         #get the number from file name
+        classNumStr = int(fileStr.split('_')[0])    #
+        hwLabels.append(classNumStr)
+        trainingMat[i,:] = img2Vector(trainFilename+'/'+fileNameStr)
+    testFileList = listdir(testFileName)
+    errorCount = 0.0
+    testNumber = len(testFileList)
+    for i in range(testNumber):
+        fileNameStr = testFileList[i]
+        fileStr = fileNameStr.split('.')[0]
+        classNumStr = int(fileStr.split('_')[0])
+        vectorUnderTest = img2Vector(testFileName+'/'+fileNameStr)
+        classifierResult = classify0(vectorUnderTest, trainingMat, hwLabels, 5)
+        print "the classifier came back with: %d, the real answer is: %d" %(classifierResult, classNumStr)
+        if(classifierResult != classNumStr):
+            errorCount += 1.0
+    print "\nthe total number of errors is: %d" %errorCount
+    print "\nthe total lerror rate is: %f" %(errorCount/float(testNumber))
+
+handwritingClassTest('/Users/xuesong/OneDrive/machinelearninginaction/Ch02/digits/trainingDigits',
+                     '/Users/xuesong/OneDrive/machinelearninginaction/Ch02/digits/testDigits')
+
