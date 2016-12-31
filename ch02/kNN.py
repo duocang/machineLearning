@@ -113,3 +113,14 @@ datingClassTest('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/dat
 classifyPerson('/Users/xuesong/machineLearning/MachineLearningInAction/ch02/datingTestSet2.txt')
 
 print("程序运行完毕")
+
+
+# 将一个32*32的二进制图像矩阵转换为1*1024的向量
+def img2Vector(filename):
+    returnVect = zeros((1,1024))
+    fr = open(filename)
+    for i in range(32):
+        lineStr = fr.readline()
+        for j in range(32):
+            returnVect[0,32*i+j] = int(lineStr)
+    return returnVect
