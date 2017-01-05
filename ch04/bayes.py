@@ -36,10 +36,10 @@ def trainNBO(trainMatrix, trainCategory):
     print("numWords是")
     print numWords
     pAbusive = sum(trainCategory)/float(numTrainDocs)#文档属于该屏蔽范畴的概率
-    p0Num = np.zeros(numWords)
-    p1Num = np.zeros(numWords)
-    p0Denom = 0.0
-    p1Denom = 0.0
+    p0Num = np.ones(numWords)
+    p1Num = np.ones(numWords)
+    p0Denom = 2.0
+    p1Denom = 2.0
     for i in range(numTrainDocs):
         if trainCategory[i] == 1:
             p1Num += trainMatrix[i]
@@ -47,8 +47,8 @@ def trainNBO(trainMatrix, trainCategory):
         else:
             p0Num += trainMatrix[i]
             p0Denom += sum(trainMatrix[i])# trainMatrix[i] 是无重复词汇数组在第一个词汇本下的零一分布。
-    p1Vect = p1Num/p1Denom
-    p0Vect = p0Num/p0Denom
+    p1Vect = np.log(p1Num/p1Denom)#p(wi|c1)   防止程序下溢出
+    p0Vect = np.log(p0Num/p0Denom)
     return p0Vect, p1Vect, pAbusive
 
 
